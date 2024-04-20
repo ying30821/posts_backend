@@ -1,72 +1,74 @@
 const http = require('http');
-const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const headers = require('./header');
 const { handleSuccess, handleError } = require('./handler');
+const Post = require('./model/post');
 
-const posts = [];
+dotenv.config({ path: './config.env' });
+const DB = process.env.DATEBASE.replace(
+  '<password>',
+  process.env.DATEBASE_PASSWORD
+);
 
-const requestListener = (req, res) => {
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log('connect successfully');
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+const requestListener = async (req, res) => {
   let body = '';
   req.on('data', (chunk) => (body += chunk));
   const method = req.method;
-
   if (req.url === '/posts' && method === 'GET') {
+    const posts = await Post.find();
     handleSuccess(res, posts);
     return;
   }
   if (req.url === '/posts' && method === 'POST') {
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const post = JSON.parse(body);
-        posts.push({
-          id: uuidv4(),
-          createAt: Date.now(),
-          ...post,
-        });
-        handleSuccess(res, posts);
+        await Post.create({ ...post });
+        const rooms = await Post.find();
+        handleSuccess(res, rooms);
       } catch (err) {
-        handleError(res, 400, 'Unexpected end of JSON input');
+        handleError(res, 400, err.message);
       }
     });
     return;
   }
   if (req.url === '/posts' && method === 'DELETE') {
-    posts.splice(0);
+    await Post.deleteMany();
+    const posts = await Post.find();
     handleSuccess(res, posts);
     return;
   }
   if (req.url.startsWith('/posts/') && method === 'DELETE') {
     const id = req.url.split('/posts/').pop();
-    const index = posts.findIndex((post) => post.id === id);
-    console.log(id, index);
-    if (index === -1) {
-      handleError(res, 400, 'id not found');
-      return;
+    try {
+      await Post.findByIdAndDelete(id);
+      const posts = await Post.find();
+      handleSuccess(res, posts);
+    } catch (err) {
+      handleError(res, 400, err.message);
     }
-    posts.splice(index, 1);
-    handleSuccess(res, posts);
     return;
   }
   if (req.url.startsWith('/posts/') && method === 'PUT') {
-    const id = req.url.split('/posts/').pop();
-    const index = posts.findIndex((post) => post.id === id);
-    if (index === -1) {
-      handleError(res, 400, 'id not found');
-      return;
-    }
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const post = JSON.parse(body);
-
-        const { createAt } = posts[index];
-        posts[index] = {
-          id,
-          createAt,
-          ...post,
-        };
+        const id = req.url.split('/posts/').pop();
+        await Post.findByIdAndUpdate(id, post);
+        const posts = await Post.find();
         handleSuccess(res, posts);
       } catch (err) {
-        handleError(res, 400, 'Unexpected end of JSON input');
+        handleError(res, 400, err.message);
       }
     });
     return;
@@ -80,4 +82,4 @@ const requestListener = (req, res) => {
 };
 
 const server = http.createServer(requestListener);
-server.listen(process.env.PORT || 8080);
+server.listen(process.env.PORT);

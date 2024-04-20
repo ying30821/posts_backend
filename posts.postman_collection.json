@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "192ca024-0e6b-4da5-b5c1-060cfbca8d42",
+		"name": "posts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18078340"
+	},
+	"item": [
+		{
+			"name": "Posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://posts-backend-k78z.onrender.com/posts",
+					"protocol": "https",
+					"host": [
+						"posts-backend-k78z",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Posts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Cornell Broadbear\",\n  \"tags\": [\"meme\", \"movie\"],\n  \"type\": \"group\",\n  \"image\": \"http://dummyimage.com/197x100.png/dddddd/000000\",\n  \"content\":\"at nibh in hac habitasse platea dictumst aliquam augue quam sollicitud…\",\n  \"likes\": 1898,\n  \"comments\": 991\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://posts-backend-k78z.onrender.com/posts",
+					"protocol": "https",
+					"host": [
+						"posts-backend-k78z",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Posts",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://posts-backend-k78z.onrender.com/posts",
+					"protocol": "https",
+					"host": [
+						"posts-backend-k78z",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://posts-backend-k78z.onrender.com/posts/66239d412710f2394120a34e",
+					"protocol": "https",
+					"host": [
+						"posts-backend-k78z",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts",
+						"66239d412710f2394120a34e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"name\": \"edit post\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://posts-backend-k78z.onrender.com/posts/66239d402710f2394120a34b",
+					"protocol": "https",
+					"host": [
+						"posts-backend-k78z",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts",
+						"66239d402710f2394120a34b"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
