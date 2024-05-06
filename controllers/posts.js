@@ -52,6 +52,7 @@ const posts = {
         new: true,
         runValidators: true,
       });
+      if (!updatePost) return handleError(res, 400, 'edit post failed');
       handleSuccess(res, updatePost);
     } catch (err) {
       handleError(res, 400, err.message);
