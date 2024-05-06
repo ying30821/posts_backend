@@ -11,14 +11,7 @@ const DB = process.env.DATEBASE.replace(
   process.env.DATEBASE_PASSWORD
 );
 
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log('connect successfully');
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+mongoose.connect(DB);
 
 const requestListener = async (req, res) => {
   let body = '';
@@ -32,10 +25,16 @@ const requestListener = async (req, res) => {
   if (req.url === '/posts' && method === 'POST') {
     req.on('end', async () => {
       try {
-        const post = JSON.parse(body);
-        await Post.create({ ...post });
-        const rooms = await Post.find();
-        handleSuccess(res, rooms);
+        const { name, content, type, image, ...field } = JSON.parse(body);
+        const createPost = {
+          name: name.trim(),
+          content: content.trim(),
+          type: type.trim(),
+          image: image.trim(),
+          ...field,
+        };
+        await Post.create(createPost);
+        handleSuccess(res, createPost);
       } catch (err) {
         handleError(res, 400, err.message);
       }
@@ -51,22 +50,27 @@ const requestListener = async (req, res) => {
   if (req.url.startsWith('/posts/') && method === 'DELETE') {
     const id = req.url.split('/posts/').pop();
     try {
-      await Post.findByIdAndDelete(id);
-      const posts = await Post.find();
-      handleSuccess(res, posts);
+      const post = await Post.findByIdAndDelete(id);
+      if (!post) {
+        handleError(res, 400, 'id not found');
+        return;
+      }
+      handleSuccess(res, post);
     } catch (err) {
       handleError(res, 400, err.message);
     }
     return;
   }
-  if (req.url.startsWith('/posts/') && method === 'PUT') {
+  if (req.url.startsWith('/posts/') && method === 'PATCH') {
     req.on('end', async () => {
       try {
-        const post = JSON.parse(body);
+        const data = JSON.parse(body);
         const id = req.url.split('/posts/').pop();
-        await Post.findByIdAndUpdate(id, post);
-        const posts = await Post.find();
-        handleSuccess(res, posts);
+        const updatePost = await Post.findByIdAndUpdate(id, data, {
+          new: true,
+          runValidators: true,
+        });
+        handleSuccess(res, updatePost);
       } catch (err) {
         handleError(res, 400, err.message);
       }
