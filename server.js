@@ -6,9 +6,9 @@ const { handleSuccess, handleError } = require('./handler');
 const Post = require('./model/post');
 
 dotenv.config({ path: './config.env' });
-const DB = process.env.DATEBASE.replace(
+const DB = process.env.DATABASE.replace(
   '<password>',
-  process.env.DATEBASE_PASSWORD
+  process.env.DATABASE_PASSWORD
 );
 
 mongoose.connect(DB);
