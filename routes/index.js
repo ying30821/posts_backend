@@ -1,6 +1,3 @@
-const Post = require('../model/post');
-const { handleSuccess, handleError } = require('../service/handler');
-
 const HttpControllers = require('../controllers/http');
 const PostsControllers = require('../controllers/posts');
 
