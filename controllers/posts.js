@@ -31,6 +31,7 @@ const posts = {
   },
   async deletePost(req, res) {
     const id = req.url.split('/posts/').pop();
+    if (!id) return handleError(res, 400, 'id is required');
     try {
       const post = await Post.findByIdAndDelete(id);
       if (!post) {
@@ -46,6 +47,7 @@ const posts = {
     try {
       const data = JSON.parse(body);
       const id = req.url.split('/posts/').pop();
+      if (!id) return handleError(res, 400, 'id is required');
       const updatePost = await Post.findByIdAndUpdate(id, data, {
         new: true,
         runValidators: true,
